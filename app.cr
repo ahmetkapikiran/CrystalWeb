@@ -2,17 +2,18 @@ require "net/http/server"
 
 module CrystalWeb
   class Base
+    def initialize
+      @get = [] of String
+    end
     def run(port)
       server = HTTP::Server.new port, do |request|
-      puts request.inspect
-        HTTP::Response.ok "text/plain", @get[request.path]
+        HTTP::Response.ok "text/plain", @get.first
       end
       server.listen
     end
 
     def get(route)
-      @get = {route:  yield}
-      puts @get.inspect
+       @get << yield.to_s      
     end
   end
 end
