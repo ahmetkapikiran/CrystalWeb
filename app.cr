@@ -3,12 +3,12 @@ require "net/http/server"
 module CrystalWeb
   class Base
     def initialize
-      @get = {} of String => String
+      @get = {} of String => ( -> Void)
     end
     def run(port)
       server = HTTP::Server.new port, do |request|
         if @get.has_key?(request.path.to_s)
-          HTTP::Response.ok "text/plain", @get[request.path.to_s]
+          HTTP::Response.ok "text/plain", @get[request.path.to_s].call
         else
           HTTP::Response.ok "text/plain", "404"
         end
@@ -16,8 +16,8 @@ module CrystalWeb
       server.listen
     end
 
-    def get(route)
-       @get[route.to_s]= yield.to_s
+    def get(route, &block)
+       @get[route.to_s] = block
     end
   end
 end
