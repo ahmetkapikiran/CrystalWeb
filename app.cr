@@ -3,7 +3,7 @@ require "net/http/server"
 module CrystalWeb
   class Base
     def initialize
-      @get = {} of String => ( -> Void)
+      @get = {} of String => ( -> String)
     end
     def run(port)
       server = HTTP::Server.new port, do |request|
@@ -16,7 +16,7 @@ module CrystalWeb
       server.listen
     end
 
-    def get(route, &block)
+    def get(route, &block : (-> String))
        @get[route.to_s] = block
     end
   end
